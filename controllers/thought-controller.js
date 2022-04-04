@@ -13,7 +13,6 @@ const thoughtController = {
   // Get a single thought and its reactions
   getOneThoughtById({ params }, res) {
     Thought.findOne({ _id: params.thoughtId })
-      .populate({ path: "reactions" })
       .then((data) => {
         if (!data) {
           res.status(404).json({ message: "There is no thought with this ID" });
@@ -73,10 +72,38 @@ const thoughtController = {
   },
 
   // Update a thought to add a reaction to the thought
-  addReaction() {},
+  addReaction({ params, body }, res) {
+    Thought.findOneAndUpdate(
+      { _id: params.thoughtId },
+      { $push: { reactions: body } },
+      { new: true }
+    )
+      .then((data) => {
+        if (!data) {
+          res.status(404).json({ message: "There is no thought with this ID" });
+          return;
+        }
+        res.json(data);
+      })
+      .catch((err) => res.status(400).json(err));
+  },
 
   // Update a thought to delete a reaction from the thought
-  removeReaction() {},
+  removeReaction({ params }, res) {
+    Thought.findOneAndUpdate(
+      { _id: params.thoughtId },
+      { $pull: { reactions: { reactionId: params.reactionId } } },
+      { new: true }
+    )
+      .then((data) => {
+        if (!data) {
+          res.status(404).json({ message: "There is no thought with this ID" });
+          return;
+        }
+        res.json(data);
+      })
+      .catch((err) => res.status(400).json(err));
+  },
 };
 
 module.exports = thoughtController;
