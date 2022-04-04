@@ -4,7 +4,6 @@ const userController = {
   // All users with friends
   getAllUsers(req, res) {
     User.find({})
-      .populate({ path: "friends", select: "-__v" })
       .select("-__v")
       .then((userData) => res.json(userData))
       .catch((err) => res.status(400).json(err));
@@ -13,7 +12,8 @@ const userController = {
   // One user with friends
   getOneUserById({ params }, res) {
     User.findOne({ _id: params.userId })
-      .populate({ path: "friends", select: "-__v" })
+      .populate({ path: "friends" })
+      .populate({ path: "thoughts" })
       .select("-__v")
       .then((userData) => {
         if (!userData) {
@@ -56,7 +56,7 @@ const userController = {
           res.status(404).json({ message: "There is no user with this ID" });
           return;
         }
-        res.json(deletedUserData);
+        res.json({ message: "User deleted successfully" });
       })
       .catch((err) => res.status(400).json(err));
   },
