@@ -16,6 +16,7 @@ const thoughtController = {
       .then((data) => {
         if (!data) {
           res.status(404).json({ message: "There is no thought with this ID" });
+          return;
         }
         res.json(data);
       })
