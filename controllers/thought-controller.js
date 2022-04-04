@@ -58,7 +58,7 @@ const thoughtController = {
       .catch((err) => res.status(400).json(err));
   },
 
-  // Delete a thought using its ID
+  // Delete a thought using its ID - Could also clear it from the user using session data
   deleteThought({ params }, res) {
     Thought.findOneAndDelete({ _id: params.thoughtId })
       .then((data) => {

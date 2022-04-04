@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
+const { DateTime } = require("luxon");
 
 const ReactionSchema = new Schema(
   {
@@ -8,23 +9,30 @@ const ReactionSchema = new Schema(
     },
     reactionBody: { type: String, required: true, max: 280 },
     username: { type: String, required: true },
-    // Needs a get that uses Luxon preferably
-    createdAt: { type: Date, default: Date.now },
-  }
-  // Commented out until getter is set up in createdAt
-  /* {toJSON: {getters: true}} */
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      // Use the native JS Date and convert it to a DateTime to print out
+      get: (createdAtVal) =>
+        DateTime.fromJSDate(createdAtVal).toLocaleString(DateTime.DATETIME_MED),
+    },
+  },
+  { toJSON: { getters: true } }
 );
 
 const ThoughtSchema = new Schema(
   {
     thoughtText: { type: String, required: true, min: 1, max: 280 },
-    // Needs a get that uses Luxon preferably
-    createdAt: { type: Date, default: Date.now },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get: (createdAtVal) =>
+        DateTime.fromJSDate(createdAtVal).toLocaleString(DateTime.DATETIME_MED),
+    },
     username: { type: String, required: true },
     reactions: [ReactionSchema],
   },
-  // Commented out until getter added to createdAt
-  { virtual: true, /* getters: true, */ id: false }
+  { toJSON: { virtual: true, getters: true }, id: false }
 );
 
 ThoughtSchema.virtual("reactionCount").get(function () {
