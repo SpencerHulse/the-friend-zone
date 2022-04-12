@@ -1,7 +1,5 @@
 # the-friend-zone
 
-# tenantively-maybe-probably
-
 ![license badge](https://img.shields.io/badge/license-MIT-brightgreen)
 
 ## Description
